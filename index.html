@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Feliz Día de la Primavera 🌼</title>
+<meta name="description" content="Unas flores amarillas que nunca se marchitan.">
+<meta name="theme-color" content="#ffd93d">
+<meta property="og:title" content="Feliz Día de la Primavera 🌼">
+<meta property="og:description" content="Te traje flores amarillas... toca para verlas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#8ec9ff;
+    --sky-bottom:#fff3c4;
+    --grass1:#6fbf73;
+    --grass2:#4fa757;
+    --petal:#ffd23f;
+    --petal-dark:#ffb703;
+    --center:#7a4a1e;
+    --card-bg:rgba(255,255,255,0.82);
+    --ink:#4a3b1d;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;width:100%;height:100%;
+    overflow-x:hidden;
+    font-family:'Quicksand',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+  body{
+    min-height:100vh;
+    min-height:100dvh;
+    background:linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-bottom) 60%, var(--sky-bottom) 100%);
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+  }
+
+  /* Sun */
+  .sun{
+    position:fixed;
+    top:8%;
+    right:10%;
+    width:80px;height:80px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff6c9, #ffd23f 70%);
+    box-shadow:0 0 40px 18px rgba(255,210,63,0.55);
+    animation:pulse 3.5s ease-in-out infinite;
+    z-index:0;
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1); box-shadow:0 0 40px 18px rgba(255,210,63,0.55);}
+    50%{transform:scale(1.08); box-shadow:0 0 55px 26px rgba(255,210,63,0.7);}
+  }
+
+  /* Clouds */
+  .cloud{
+    position:fixed;
+    background:#fff;
+    opacity:0.85;
+    border-radius:50px;
+    filter:blur(0.3px);
+    z-index:0;
+  }
+  .cloud::before,.cloud::after{
+    content:"";
+    position:absolute;
+    background:#fff;
+    border-radius:50%;
+  }
+  .cloud1{ width:90px;height:28px; top:14%; left:-120px; animation:drift 26s linear infinite;}
+  .cloud1::before{width:46px;height:46px; top:-22px; left:10px;}
+  .cloud1::after{width:34px;height:34px; top:-14px; left:48px;}
+  .cloud2{ width:60px;height:20px; top:26%; left:-100px; animation:drift 34s linear infinite; animation-delay:-10s;}
+  .cloud2::before{width:30px;height:30px; top:-14px; left:6px;}
+  .cloud2::after{width:24px;height:24px; top:-10px; left:30px;}
+  @keyframes drift{
+    from{transform:translateX(0);}
+    to{transform:translateX(115vw);}
+  }
+
+  /* Butterfly */
+  .butterfly{
+    position:fixed;
+    top:32%;
+    left:-40px;
+    font-size:26px;
+    z-index:2;
+    animation:fly 12s ease-in-out infinite;
+  }
+  @keyframes fly{
+    0%{ left:-40px; top:34%; transform:rotate(0deg);}
+    20%{ left:20vw; top:22%; transform:rotate(8deg);}
+    40%{ left:45vw; top:38%; transform:rotate(-6deg);}
+    60%{ left:68vw; top:20%; transform:rotate(6deg);}
+    80%{ left:92vw; top:32%; transform:rotate(-4deg);}
+    100%{ left:115vw; top:26%; transform:rotate(0deg);}
+  }
+  .butterfly span{
+    display:inline-block;
+    animation:flap 0.35s ease-in-out infinite alternate;
+  }
+  @keyframes flap{
+    from{transform:scaleX(1);}
+    to{transform:scaleX(0.75);}
+  }
+
+  /* Grass */
+  .grass{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    height:14vh;
+    min-height:90px;
+    background:linear-gradient(to bottom, var(--grass1), var(--grass2));
+    border-radius:50% 50% 0 0 / 30px 30px 0 0;
+    z-index:1;
+  }
+
+  /* Falling petals */
+  .petal-fall{
+    position:fixed;
+    top:-5vh;
+    width:12px;height:10px;
+    background:var(--petal);
+    border-radius:50% 50% 50% 0;
+    opacity:0.9;
+    z-index:3;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+  }
+  @keyframes fall{
+    0%{ transform:translate(0,0) rotate(0deg); opacity:0.95;}
+    100%{ transform:translate(var(--drift,20px), 115vh) rotate(360deg); opacity:0.6;}
+  }
+
+  /* Flowers */
+  .field{
+    position:fixed;
+    bottom:6vh;
+    left:0; right:0;
+    height:0;
+    z-index:2;
+  }
+  .plant{
+    position:absolute;
+    bottom:0;
+    transform-origin:bottom center;
+    animation:sway var(--dur,4s) ease-in-out infinite;
+    animation-delay:var(--delay,0s);
+  }
+  @keyframes sway{
+    0%,100%{ transform:rotate(-4deg);}
+    50%{ transform:rotate(4deg);}
+  }
+  .stem{
+    width:5px;
+    height:var(--h,90px);
+    margin:0 auto;
+    background:linear-gradient(to top,#3f8f4a,#63b96b);
+    border-radius:3px;
+    position:relative;
+  }
+  .leaf{
+    position:absolute;
+    width:22px;height:11px;
+    background:#5bab63;
+    border-radius:0 100% 0 100%;
+  }
+  .leaf.l{ left:-19px; top:40%; transform:rotate(10deg);}
+  .leaf.r{ right:-19px; top:60%; transform:scaleX(-1) rotate(10deg);}
+  .bloom{
+    position:absolute;
+    left:50%; top:0;
+    width:54px;height:54px;
+    transform:translate(-50%,-70%);
+  }
+  .petal{
+    position:absolute;
+    left:50%;top:50%;
+    width:24px;height:13px;
+    background:linear-gradient(to right, var(--petal-dark), var(--petal));
+    border-radius:50%;
+    transform-origin:0% 50%;
+  }
+  .petal:nth-child(1){ transform:rotate(0deg) translate(4px,-6.5px);}
+  .petal:nth-child(2){ transform:rotate(45deg) translate(4px,-6.5px);}
+  .petal:nth-child(3){ transform:rotate(90deg) translate(4px,-6.5px);}
+  .petal:nth-child(4){ transform:rotate(135deg) translate(4px,-6.5px);}
+  .petal:nth-child(5){ transform:rotate(180deg) translate(4px,-6.5px);}
+  .petal:nth-child(6){ transform:rotate(225deg) translate(4px,-6.5px);}
+  .petal:nth-child(7){ transform:rotate(270deg) translate(4px,-6.5px);}
+  .petal:nth-child(8){ transform:rotate(315deg) translate(4px,-6.5px);}
+  .center{
+    position:absolute;
+    left:50%;top:50%;
+    width:20px;height:20px;
+    background:radial-gradient(circle at 35% 35%, #a8672c, var(--center));
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:inset 0 0 4px rgba(0,0,0,0.35);
+  }
+
+  /* Card */
+  .card{
+    position:relative;
+    z-index:5;
+    max-width:380px;
+    width:100%;
+    background:var(--card-bg);
+    backdrop-filter:blur(6px);
+    border-radius:26px;
+    padding:34px 26px 28px;
+    text-align:center;
+    box-shadow:0 18px 40px rgba(90,70,20,0.18);
+    opacity:0;
+    transform:translateY(18px) scale(0.97);
+    animation:appear 1s ease-out 0.3s forwards;
+  }
+  @keyframes appear{
+    to{ opacity:1; transform:translateY(0) scale(1);}
+  }
+  .card .icon{
+    font-size:38px;
+    display:block;
+    margin-bottom:6px;
+  }
+  .card h1{
+    font-family:'Quicksand',sans-serif;
+    font-size:clamp(1.25rem, 5vw, 1.55rem);
+    color:var(--ink);
+    margin:0 0 14px;
+    font-weight:700;
+  }
+  .card p.frase{
+    font-family:'Caveat',cursive;
+    font-size:clamp(1.4rem, 6.5vw, 1.8rem);
+    line-height:1.35;
+    color:#5a4014;
+    margin:0 0 16px;
+  }
+  .card .firma{
+    font-family:'Quicksand',sans-serif;
+    font-size:0.95rem;
+    color:#7a6a45;
+    margin:0 0 22px;
+  }
+  .btn{
+    border:none;
+    background:linear-gradient(135deg,#ffd23f,#ffb703);
+    color:#4a3305;
+    font-family:'Quicksand',sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    padding:13px 24px;
+    border-radius:999px;
+    box-shadow:0 8px 18px rgba(255,178,3,0.45);
+    cursor:pointer;
+    transition:transform 0.15s ease;
+  }
+  .btn:active{ transform:scale(0.94); }
+
+  @media (max-width:360px){
+    .card{ padding:28px 18px 24px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="sun"></div>
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+  <div class="butterfly"><span>🦋</span></div>
+
+  <div class="field" id="field"></div>
+  <div class="grass"></div>
+
+  <main class="card">
+    <span class="icon">🌼</span>
+    <h1>Feliz Día de la Primavera</h1>
+    <p class="frase">Se supone que hoy toca regalar flores amarillas… pero como soy programador, en vez de comprarlas, te las codeé.<br>Más baratas y nunca se marchitan.</p>
+    <p class="firma">— Yoimer</p>
+    <button class="btn" id="masFlores">Toca para más flores 🌼</button>
+  </main>
+
+  <script>
+    const field = document.getElementById('field');
+
+    function plantar(xPercent, h, dur, delay){
+      const p = document.createElement('div');
+      p.className = 'plant';
+      p.style.left = xPercent + '%';
+      p.style.setProperty('--h', h + 'px');
+      p.style.setProperty('--dur', dur + 's');
+      p.style.setProperty('--delay', delay + 's');
+      p.innerHTML = `
+        <div class="stem">
+          <div class="leaf l"></div>
+          <div class="leaf r"></div>
+          <div class="bloom">
+            ${Array.from({length:8}).map(()=>'<div class="petal"></div>').join('')}
+            <div class="center"></div>
+          </div>
+        </div>`;
+      field.appendChild(p);
+    }
+
+    const flores = [
+      [6, 100, 4.2, 0],
+      [20, 70, 3.6, 0.4],
+      [34, 115, 4.6, 0.1],
+      [50, 80, 3.8, 0.6],
+      [64, 105, 4.3, 0.2],
+      [78, 75, 3.7, 0.5],
+      [92, 95, 4.1, 0.3],
+    ];
+    flores.forEach(f => plantar(...f));
+
+    function soltarPetalo(){
+      const p = document.createElement('div');
+      p.className = 'petal-fall';
+      const left = Math.random()*100;
+      const dur = 5 + Math.random()*4;
+      const drift = (Math.random()*80-40) + 'px';
+      p.style.left = left + 'vw';
+      p.style.setProperty('--drift', drift);
+      p.style.animationDuration = dur + 's';
+      p.style.background = Math.random() > 0.5 ? 'var(--petal)' : 'var(--petal-dark)';
+      document.body.appendChild(p);
+      setTimeout(()=>p.remove(), dur*1000 + 200);
+    }
+    for(let i=0;i<6;i++){ setTimeout(()=>soltarPetalo(), i*900); }
+    setInterval(soltarPetalo, 1400);
+
+    document.getElementById('masFlores').addEventListener('click', () => {
+      for(let i=0;i<14;i++){ setTimeout(()=>soltarPetalo(), i*60); }
+    });
+  </script>
+</body>
+</html>
