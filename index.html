@@ -90,7 +90,7 @@
     top:32%;
     left:-40px;
     font-size:26px;
-    z-index:2;
+    z-index:8;
     animation:fly 12s ease-in-out infinite;
   }
   @keyframes fly{
@@ -129,7 +129,7 @@
     background:var(--petal);
     border-radius:50% 50% 50% 0;
     opacity:0.9;
-    z-index:3;
+    z-index:8;
     animation-name:fall;
     animation-timing-function:linear;
     animation-iteration-count:infinite;
@@ -291,19 +291,10 @@
     pointer-events:auto;
   }
   .rose-overlay svg{
-    width:min(64vw, 240px);
+    width:min(82vw, 300px);
     height:auto;
     overflow:visible;
   }
-  .rose-overlay svg path{
-    fill-opacity:0;
-  }
-  .rose-stem{ stroke-dasharray:1; stroke-dashoffset:1; animation:rdraw 0.9s ease forwards; }
-  .rose-leaf1{ stroke-dasharray:1; stroke-dashoffset:1; animation:rdraw 0.6s ease 0.45s forwards, rfill 0.4s ease 1.05s forwards; }
-  .rose-leaf2{ stroke-dasharray:1; stroke-dashoffset:1; animation:rdraw 0.6s ease 0.65s forwards, rfill 0.4s ease 1.25s forwards; }
-  .rose-outer{ stroke-dasharray:1; stroke-dashoffset:1; animation:rdraw 1.3s ease 0.9s forwards, rfill 0.6s ease 2.2s forwards; }
-  .rose-mid{ stroke-dasharray:1; stroke-dashoffset:1; animation:rdraw 1.1s ease 2.3s forwards; }
-  .rose-inner{ stroke-dasharray:1; stroke-dashoffset:1; animation:rdraw 0.8s ease 3.4s forwards; }
   @keyframes rdraw{ to{ stroke-dashoffset:0; } }
   @keyframes rfill{ to{ fill-opacity:1; } }
   .rose-caption{
@@ -343,17 +334,8 @@
   </main>
 
   <div class="rose-overlay" id="roseOverlay">
-    <div id="roseSvgHost">
-      <svg viewBox="0 0 220 290" xmlns="http://www.w3.org/2000/svg">
-        <path class="rose-stem" d="M108,272 C96,232 118,198 108,150" pathLength="1" fill="none" stroke="#2f7a3d" stroke-width="7" stroke-linecap="round"/>
-        <path class="rose-leaf1" d="M106,214 C88,204 66,209 58,229 C70,235 93,231 106,221 Z" pathLength="1" fill="#57b35f" stroke="#2f7a3d" stroke-width="3" stroke-linejoin="round"/>
-        <path class="rose-leaf2" d="M103,246 C120,239 143,245 150,263 C138,267 116,263 103,253 Z" pathLength="1" fill="#57b35f" stroke="#2f7a3d" stroke-width="3" stroke-linejoin="round"/>
-        <path class="rose-outer" d="M105,150 C82,145 68,120 72,92 C76,66 90,46 106,40 C122,46 138,66 142,92 C146,121 130,146 108,150 Z" pathLength="1" fill="#ffca28" stroke="#d98c12" stroke-width="3"/>
-        <path class="rose-mid" d="M88,64 C96,52 118,52 126,65" pathLength="1" fill="none" stroke="#c97a00" stroke-width="4" stroke-linecap="round"/>
-        <path class="rose-inner" d="M78,86 C92,72 122,72 136,87" pathLength="1" fill="none" stroke="#b06b00" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <p class="rose-caption">🌹 Para ti</p>
+    <div id="roseSvgHost"></div>
+    <p class="rose-caption">🌹 Un ramo para ti</p>
     <p class="rose-hint">(toca en cualquier parte para cerrar)</p>
   </div>
 
@@ -408,12 +390,105 @@
 
     const roseOverlay = document.getElementById('roseOverlay');
     const roseSvgHost = document.getElementById('roseSvgHost');
+    const NS = 'http://www.w3.org/2000/svg';
+
+    function crearEl(tag, attrs){
+      const el = document.createElementNS(NS, tag);
+      for(const k in attrs){ el.setAttribute(k, attrs[k]); }
+      return el;
+    }
+    function elipseD(cx, cy, rx, ry){
+      return `M${cx-rx},${cy} A${rx},${ry} 0 1,0 ${cx+rx},${cy} A${rx},${ry} 0 1,0 ${cx-rx},${cy} Z`;
+    }
+    function animarTrazo(el, delay, dur){
+      el.setAttribute('pathLength', '1');
+      el.style.strokeDasharray = '1';
+      el.style.strokeDashoffset = '1';
+      el.style.animation = `rdraw ${dur}s ease ${delay}s forwards`;
+    }
+    function animarTrazoRelleno(el, delay, dur, fillDelay, fillDur){
+      animarTrazo(el, delay, dur);
+      el.style.fillOpacity = '0';
+      el.style.animation += `, rfill ${fillDur}s ease ${fillDelay}s forwards`;
+    }
+    function agregarAnillo(g, radio, largo, ancho, cuenta, offsetDeg, relleno, borde, delayBase, staggerPetalo, drawDur, fillDur){
+      for(let i=0;i<cuenta;i++){
+        const theta = offsetDeg + i*(360/cuenta);
+        const el = crearEl('path', {
+          d: elipseD(radio, 0, largo/2, ancho/2),
+          transform: `rotate(${theta})`,
+          fill: relleno, stroke: borde, 'stroke-width': 1.6
+        });
+        g.appendChild(el);
+        const d = delayBase + i*staggerPetalo;
+        animarTrazoRelleno(el, d, drawDur, d + drawDur*0.6, fillDur);
+      }
+    }
+    function crearHoja(svg, x, y, lado, delay){
+      const dx = 22*lado;
+      const d = `M${x},${y} C${x+dx*0.5},${y-8} ${x+dx},${y-4} ${x+dx*1.15},${y+10} C${x+dx*0.7},${y+14} ${x+dx*0.25},${y+8} ${x},${y} Z`;
+      const el = crearEl('path', { d, fill:'#57b35f', stroke:'#2f7a3d', 'stroke-width':2.5 });
+      svg.appendChild(el);
+      animarTrazoRelleno(el, delay, 0.5, delay+0.3, 0.35);
+    }
+    function crearRosa(svg, baseX, baseY, bloomX, bloomY, tilt, escala, delayBase, ladoHoja){
+      const stemD = `M${baseX},${baseY} C${baseX+(bloomX-baseX)*0.2},${baseY-(baseY-bloomY)*0.55} ${bloomX-(bloomX-baseX)*0.15},${bloomY+(baseY-bloomY)*0.35} ${bloomX},${bloomY+14*escala}`;
+      const stem = crearEl('path', {d:stemD, fill:'none', stroke:'#2f7a3d', 'stroke-width':6, 'stroke-linecap':'round'});
+      svg.appendChild(stem);
+      animarTrazo(stem, delayBase, 0.7);
+
+      const leafX = baseX + (bloomX-baseX)*0.55;
+      const leafY = baseY + (bloomY-baseY)*0.55;
+      crearHoja(svg, leafX, leafY, ladoHoja, delayBase+0.3);
+
+      const g = crearEl('g', {transform:`translate(${bloomX},${bloomY}) rotate(${tilt}) scale(${escala})`});
+      svg.appendChild(g);
+
+      const t0 = delayBase + 0.6;
+      agregarAnillo(g, 24, 26, 22, 8, 0,    '#ffd54f', '#d98c12', t0,      0.05, 0.55, 0.35);
+      agregarAnillo(g, 15, 19, 17, 6, 22.5, '#ffc107', '#c97a00', t0+0.55, 0.05, 0.45, 0.30);
+      agregarAnillo(g, 8,  12, 11, 5, 30,   '#ffb300', '#a56600', t0+1.00, 0.04, 0.35, 0.25);
+
+      const centro = crearEl('path', { d: elipseD(0,0,4.5,4.5), fill:'#8a5a12', stroke:'#6b4200', 'stroke-width':1.5 });
+      g.appendChild(centro);
+      animarTrazoRelleno(centro, t0+1.30, 0.3, t0+1.5, 0.25);
+
+      return t0 + 1.65;
+    }
+    function crearLazo(svg, x, y, delay){
+      const g = crearEl('g', {transform:`translate(${x},${y})`});
+      svg.appendChild(g);
+      const loopL = crearEl('path', {d:'M0,0 C-22,-10 -34,2 -26,14 C-18,24 -4,18 0,4 Z', fill:'#fff6e0', stroke:'#d8b978', 'stroke-width':2});
+      const loopR = crearEl('path', {d:'M0,0 C22,-10 34,2 26,14 C18,24 4,18 0,4 Z', fill:'#fff6e0', stroke:'#d8b978', 'stroke-width':2});
+      const knot = crearEl('path', {d: elipseD(0,2,6,6), fill:'#ffe9b0', stroke:'#d8b978', 'stroke-width':2});
+      g.appendChild(loopL); g.appendChild(loopR); g.appendChild(knot);
+      animarTrazoRelleno(loopL, delay, 0.4, delay+0.25, 0.3);
+      animarTrazoRelleno(loopR, delay+0.1, 0.4, delay+0.35, 0.3);
+      animarTrazoRelleno(knot, delay+0.3, 0.3, delay+0.5, 0.25);
+      return delay + 0.8;
+    }
+    function dibujarRamo(){
+      roseSvgHost.innerHTML = '';
+      const svg = crearEl('svg', {viewBox:'0 0 260 320'});
+      roseSvgHost.appendChild(svg);
+
+      const baseX = 130, baseY = 300;
+      const f1 = crearRosa(svg, baseX, baseY, 72,  140, -14, 0.85, 0,   -1);
+      const f2 = crearRosa(svg, baseX, baseY, 130, 105, 0,   1.00, 0.5,  1);
+      const f3 = crearRosa(svg, baseX, baseY, 188, 140, 14,  0.85, 1.0,  1);
+
+      const finRamo = crearLazo(svg, baseX, baseY-6, Math.max(f1,f2,f3) + 0.1);
+
+      const caption = document.querySelector('.rose-caption');
+      caption.style.animation = 'none';
+      void caption.offsetWidth;
+      caption.style.opacity = '0';
+      caption.style.animation = `rcaption 0.8s ease ${finRamo + 0.2}s forwards`;
+    }
 
     document.getElementById('btnRosa').addEventListener('click', () => {
-      const oldSvg = roseSvgHost.querySelector('svg');
-      roseSvgHost.appendChild(oldSvg.cloneNode(true));
-      oldSvg.remove();
       roseOverlay.classList.add('show');
+      dibujarRamo();
     });
 
     roseOverlay.addEventListener('click', () => {
